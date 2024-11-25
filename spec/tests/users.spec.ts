@@ -23,7 +23,7 @@ describe('UserRouter', () => {
 
   // Run before all tests
   beforeAll(done => {
-    agent = supertest.agent(app);
+    // agent = supertest.agent(app);
     done();
   });
 
