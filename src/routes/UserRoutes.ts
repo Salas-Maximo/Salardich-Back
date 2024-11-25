@@ -3,6 +3,7 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import UserService from '@src/services/UserService';
 import { IUser } from '@src/models/User';
 import { IReq, IRes } from './types/express/misc';
+import mongoose from 'mongoose';
 
 
 // **** Functions **** //
@@ -44,7 +45,7 @@ async function update(req: IReq<{user: IUser}>, res: IRes) {
  */
 async function delete_(req: IReq, res: IRes) {
   const id = +req.params.id;
-  await UserService.delete(id);
+  await UserService.delete(new mongoose.Types.ObjectId(id));
   return res.status(HttpStatusCodes.OK).end();
 }
 

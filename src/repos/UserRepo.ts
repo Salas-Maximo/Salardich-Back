@@ -4,15 +4,16 @@ import { UserModel } from './Mongoose';
 import bcrypt from 'bcrypt';
 import EnvVars from '@src/common/EnvVars';
 import jwt from 'jsonwebtoken';
+import mongoose, { ObjectId } from 'mongoose';
 
 // **** Functions **** //
 
 /**
  * Get one user.
  */
-async function getOne(id: number): Promise<IUser | null> {
+async function getOne(id: mongoose.Types.ObjectId): Promise<IUser | null> {
   return new Promise<IUser | null>((resolve, reject) => {
-    UserModel.findOne({ id: id }).then((user: any) => {
+    UserModel.findOne({ _id: id }).then((user: any) => {
       resolve(user);
     })
     .catch((err: any) => {
@@ -27,9 +28,9 @@ async function getOne(id: number): Promise<IUser | null> {
 /**
  * See if a user with the given id exists.
  */
-async function persists(id: number): Promise<boolean> {
+async function persists(id: mongoose.Types.ObjectId): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
-    UserModel.findOne({ id: id }).then((user: any) => {
+    UserModel.findOne({ _id: id }).then((user: any) => {
       if(user){
         resolve(true);
       }else{
@@ -65,7 +66,6 @@ async function getAll(): Promise<IUser[]> {
  * Add one user.
  */
 async function add(user: IUser): Promise<void> {
-  user.id = getRandomInt();
   const saltRounds = 10; // Puedes ajustar el número de rondas según sea necesario
   return new Promise<void>((resolve, reject) => {
     bcrypt.genSalt(saltRounds, (err, salt) => {
@@ -120,7 +120,7 @@ async function login(user: IUser): Promise<String> {
  */
 async function update(user: IUser): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    UserModel.updateOne({ id: user.id }, user).then(() => resolve()).catch((err: any) => {
+    UserModel.updateOne({ _id: user._id }, user).then(() => resolve()).catch((err: any) => {
       if (err) {
         reject(err);
       }
@@ -132,9 +132,9 @@ async function update(user: IUser): Promise<void> {
 /**
  * Delete one user.
  */
-async function delete_(id: number): Promise<void> {
+async function delete_(id: mongoose.Types.ObjectId): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    UserModel.deleteOne({ id: id }).then(() => resolve()).catch((err: any) => {
+    UserModel.deleteOne({ _id: id }).then(() => resolve()).catch((err: any) => {
       if (err) {
         reject(err);
       }

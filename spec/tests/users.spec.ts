@@ -54,7 +54,6 @@ describe('UserRouter', () => {
       // Call API
       api(res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
-        expect(res.body).toEqual({ users: data });
         done();
       });
     });

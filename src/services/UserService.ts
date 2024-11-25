@@ -3,6 +3,7 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 
 import UserRepo from '@src/repos/UserRepo';
 import { IUser } from '@src/models/User';
+import mongoose from 'mongoose';
 
 
 // **** Variables **** //
@@ -34,7 +35,7 @@ function login(user: IUser): Promise<String> {
  * Update one user.
  */
 async function updateOne(user: IUser): Promise<void> {
-  const persists = await UserRepo.persists(user.id);
+  const persists = await UserRepo.persists(user._id);
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -48,7 +49,7 @@ async function updateOne(user: IUser): Promise<void> {
 /**
  * Delete a user by their id.
  */
-async function _delete(id: number): Promise<void> {
+async function _delete(id: mongoose.Types.ObjectId): Promise<void> {
   const persists = await UserRepo.persists(id);
   if (!persists) {
     throw new RouteError(
