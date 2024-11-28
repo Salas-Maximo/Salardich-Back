@@ -12,8 +12,8 @@ import mongoose from 'mongoose';
  * Get all users.
  */
 async function getAll(_: IReq, res: IRes) {
-  const users = await SangucheService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ users });
+  const sanguches = await SangucheService.getAll();
+  return res.status(HttpStatusCodes.OK).json(sanguches);
 }
 
 /**
