@@ -38,8 +38,8 @@ async function update(req: IReq<{sanguche: ISanguche}>, res: IRes) {
  * Delete one sanguche.
  */
 async function delete_(req: IReq, res: IRes) {
-  const id = new mongoose.Types.ObjectId(`${req.params._id}`);
-  await SangucheService.delete(id);
+  console.log("Borrar ", req.params.id);
+  const id = new mongoose.Types.ObjectId(req.params._id); 
   return res.status(HttpStatusCodes.OK).end();
 }
 

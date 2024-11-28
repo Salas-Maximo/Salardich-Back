@@ -61,6 +61,7 @@ async function getAll(): Promise<ISanguche[]> {
  * Add one sanguche.
  */
 async function add(sanguche: ISanguche): Promise<void> {
+  sanguche._id = new mongoose.Types.ObjectId();
   return new Promise<void>((resolve, reject) => {
     SangucheModel.insertMany(sanguche).then((res: any) => {
       console.log('Sanguche added');
@@ -94,6 +95,7 @@ async function update(sanguche: ISanguche): Promise<void> {
  * Delete one sanguche.
  */
 async function delete_(id: mongoose.Types.ObjectId): Promise<void> {
+  console.log("Borrar ", id);
   return new Promise<void>((resolve, reject) => {
     SangucheModel.deleteOne({ _id: id }).then(() => resolve()).catch((err: any) => {
       if (err) {

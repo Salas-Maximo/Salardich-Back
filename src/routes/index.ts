@@ -65,13 +65,13 @@ sangucheRouter.put(
 // Delete one user
 userRouter.delete(
   Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
+  validate(['id', 'String', 'params']),
   UserRoutes.delete,
 );
 
 sangucheRouter.delete(
   Paths.Sanguches.Delete,
-  validate(['id', 'number', 'params']),
+  validate(['id', 'String', 'params']),
   SangucheRoutes.delete,
 );
 

@@ -12,6 +12,7 @@ const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' +
 
 export interface ISanguche {
   _id?: mongoose.Types.ObjectId;
+  id: string;
   nombre: string;
   ingredientes: Array<Ingrediente>;
 }
@@ -26,9 +27,11 @@ function new_(
     nombre?: string,
     ingredientes?: Array<Ingrediente>,
     _id?: string, // id last cause usually set by db
+    id? : string,
 ): ISanguche {
   return {
-    _id: _id ? new mongoose.Types.ObjectId(`${_id}`) : undefined,
+    id: id ?? "",
+    _id: id ? new mongoose.Types.ObjectId(`${_id}`) : undefined,
     nombre: (nombre ?? ''),
     ingredientes: (ingredientes ? ingredientes : []),
   };
@@ -42,7 +45,7 @@ function from(param: object): ISanguche {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
   const p = param as ISanguche;
-  return new_(p.nombre, p.ingredientes, p._id?.toString());
+  return new_(p.nombre, p.ingredientes, p._id?.toString(), p.id);
 }
 
 /**

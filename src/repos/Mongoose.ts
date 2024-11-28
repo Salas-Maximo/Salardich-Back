@@ -4,14 +4,15 @@ import mongoose, { Connection, Schema } from 'mongoose';
 
 const userSchema : Schema = new mongoose.Schema({
     username: String,
-    id: Number,
+    id: String,
     email: String,
     password: String,
     creaciones: Array<ISanguche>,
     }, { collection: 'User' });
 
 const sangucheSchema : Schema = new mongoose.Schema({
-    id: {type: Number, required: false},
+    id: {type: String, required: false},
+    _id : {type: mongoose.Types.ObjectId, required: false},
     nombre: {type: String, required: false},
     ingredientes: {type: Array<Ingrediente>, required: false},
     }, { collection: 'Sanguche' });
