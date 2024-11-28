@@ -17,6 +17,7 @@ COPY package.json ./
 RUN npm install --only=production
 
 COPY --from=build /app/dist ./dist
+COPY --form=build /app/env/development.env /app/env/development.env
 
 ENV PORT=3000
 ENV HOST=0.0.0.0
