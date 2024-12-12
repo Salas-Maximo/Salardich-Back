@@ -2,22 +2,22 @@
  * Express router paths go here.
  */
 
-
 export default {
-  Base: '/api',
+  Base: "/api",
   Users: {
-    Base: '/users',
-    Get: '/',
-    Add: '/',
-    Login: '/login',
-    Update: '/',
-    Delete: '/:id',
+    Base: "/users",
+    Get: "/",
+    Add: "/",
+    Login: "/login",
+    Update: "/",
+    Delete: "/:id",
   },
   Sanguches: {
-    Base: '/sanguches',
-    Get: '/',
-    Add: '/',
-    Update: '/',
-    Delete: '/:id',
+    Base: "/sanguches",
+    Get: "/",
+    Add: "/",
+    Update: "/",
+    Delete: "/:id",
+    GetAllByCreatorId: "/creator/:creatorId",
   },
 } as const;
