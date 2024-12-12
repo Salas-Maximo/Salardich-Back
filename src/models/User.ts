@@ -1,13 +1,10 @@
-import moment from 'moment';
-import { ISanguche } from './Sanguche';
-import mongoose, { mongo } from 'mongoose';
-
+import mongoose from "mongoose";
 
 // **** Variables **** //
 
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
-  'with the appropriate user keys.';
-
+const INVALID_CONSTRUCTOR_PARAM =
+  "nameOrObj arg must a string or an object " +
+  "with the appropriate user keys.";
 
 // **** Types **** //
 
@@ -16,9 +13,9 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
+  isAdmin: boolean;
   creaciones: Array<mongoose.Types.ObjectId>;
 }
-
 
 // **** Functions **** //
 
@@ -30,14 +27,16 @@ function new_(
   email?: string,
   password?: string,
   creaciones?: Array<mongoose.Types.ObjectId>,
+  isAdmin?: boolean,
   _id?: mongoose.Types.ObjectId
 ): IUser {
   return {
-    _id: (_id ?? new mongoose.Types.ObjectId()),
-    username: (username ?? ''),
-    email: (email ?? ''),
-    password: (password ?? ''),
-    creaciones: (creaciones ? creaciones : []),
+    _id: _id ?? new mongoose.Types.ObjectId(),
+    username: username ?? "",
+    email: email ?? "",
+    password: password ?? "",
+    isAdmin: isAdmin ?? false,
+    creaciones: creaciones ? creaciones : [],
   };
 }
 
@@ -49,7 +48,7 @@ function from(param: object): IUser {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
   const p = param as IUser;
-  return new_(p.username, p.email, p.password,p.creaciones, p._id);
+  return new_(p.username, p.email, p.password, p.creaciones, p.isAdmin, p._id);
 }
 
 /**
@@ -58,14 +57,18 @@ function from(param: object): IUser {
 function isUser(arg: unknown): boolean {
   return (
     !!arg &&
-    typeof arg === 'object' &&
-    ('_id' in arg ?  typeof arg._id === 'string' : true) && 
-    'email' in arg && typeof arg.email === 'string' && 
-    'username' in arg && typeof arg.username === 'string' &&
-    'password' in arg && typeof arg.password === 'string'
+    typeof arg === "object" &&
+    ("_id" in arg ? typeof arg._id === "string" : true) &&
+    "email" in arg &&
+    typeof arg.email === "string" &&
+    "username" in arg &&
+    typeof arg.username === "string" &&
+    "password" in arg &&
+    typeof arg.password === "string" &&
+    "isAdmin" in arg &&
+    typeof arg.isAdmin === "boolean"
   );
 }
-
 
 // **** Export default **** //
 
