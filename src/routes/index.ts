@@ -1,18 +1,15 @@
-import { Router } from 'express';
-import jetValidator from 'jet-validator';
+import { Router } from "express";
+import jetValidator from "jet-validator";
 
-import Paths from '../common/Paths';
-import User from '@src/models/User';
-import UserRoutes from './UserRoutes';
-import SangucheRoutes from './SangucheRoutes';
-import { verifyToken } from '@src/middleware/verification';
-import Sanguche from '@src/models/Sanguche';
+import User from "@src/models/User";
+import Paths from "../common/Paths";
+import SangucheRoutes from "./SangucheRoutes";
+import UserRoutes from "./UserRoutes";
 
 // **** Variables **** //
 
 const apiRouter = Router(),
   validate = jetValidator();
-
 
 // ** Add UserRouter ** //
 
@@ -20,59 +17,41 @@ const userRouter = Router();
 const sangucheRouter = Router();
 
 // Get all users
-userRouter.get(
-  Paths.Users.Get,
-  UserRoutes.getAll,
-);
+userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 
-sangucheRouter.get(
-  Paths.Sanguches.Get,
-  SangucheRoutes.getAll,
+sangucheRouter.get(Paths.Sanguches.Get, SangucheRoutes.getAll);
+userRouter.post(
+  Paths.Users.Login,
+  validate(["user", () => true]),
+  UserRoutes.login
 );
-
 // Add one user
 userRouter.post(
   Paths.Users.Add,
-  validate(['user', User.isUser]),
-  UserRoutes.add,
+  validate(["user", User.isUser]),
+  UserRoutes.add
 );
 
-userRouter.post(
-  Paths.Users.Login,
-  validate(['user', User.isUser]),
-  UserRoutes.login,
-);
-
-sangucheRouter.post(
-  Paths.Sanguches.Add,
-  validate(['sanguche', Sanguche.isSanguche]),
-  SangucheRoutes.add,
-);
+sangucheRouter.post(Paths.Sanguches.Add, SangucheRoutes.add);
 
 // Update one user
 userRouter.put(
   Paths.Users.Update,
-  validate(['user', User.isUser]),
-  UserRoutes.update,
+  validate(["user", User.isUser]),
+  UserRoutes.update
 );
 
-sangucheRouter.put(
-  Paths.Sanguches.Update,
-  validate(['sanguche', Sanguche.isSanguche]),
-  SangucheRoutes.update,
-);
+sangucheRouter.put(Paths.Sanguches.Update, SangucheRoutes.update);
 
 // Delete one user
-userRouter.delete(
-  Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
-  UserRoutes.delete,
-);
+userRouter.delete(Paths.Users.Delete, UserRoutes.delete);
 
-sangucheRouter.delete(
-  Paths.Sanguches.Delete,
-  validate(['id', 'number', 'params']),
-  SangucheRoutes.delete,
+sangucheRouter.delete(Paths.Sanguches.Delete, SangucheRoutes.delete);
+
+sangucheRouter.get(
+  Paths.Sanguches.GetAllByCreatorId,
+  validate(["creatorId", "string", "params"]),
+  SangucheRoutes.getAllByCreatorId
 );
 
 // Add UserRouter

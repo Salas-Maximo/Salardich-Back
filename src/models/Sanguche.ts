@@ -1,12 +1,10 @@
-import moment from 'moment';
-import mongoose from 'mongoose';
-
+import mongoose from "mongoose";
 
 // **** Variables **** //
 
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
-  'with the appropriate user keys.';
-
+const INVALID_CONSTRUCTOR_PARAM =
+  "nameOrObj arg must a string or an object " +
+  "with the appropriate user keys.";
 
 // **** Types **** //
 
@@ -14,8 +12,8 @@ export interface ISanguche {
   _id?: mongoose.Types.ObjectId;
   nombre: string;
   ingredientes: Array<Ingrediente>;
+  creatorId: mongoose.Types.ObjectId;
 }
-
 
 // **** Functions **** //
 
@@ -23,14 +21,15 @@ export interface ISanguche {
  * Create new User.
  */
 function new_(
-    nombre?: string,
-    ingredientes?: Array<Ingrediente>,
-    _id?: string, // id last cause usually set by db
+  nombre?: string,
+  ingredientes?: Array<Ingrediente>,
+  _id?: string // id last cause usually set by db
 ): ISanguche {
   return {
     _id: _id ? new mongoose.Types.ObjectId(`${_id}`) : undefined,
-    nombre: (nombre ?? ''),
-    ingredientes: (ingredientes ? ingredientes : []),
+    nombre: nombre ?? "",
+    ingredientes: ingredientes ? ingredientes : [],
+    creatorId: new mongoose.Types.ObjectId(),
   };
 }
 
@@ -49,24 +48,31 @@ function from(param: object): ISanguche {
  * See if the param meets criteria to be a user.
  */
 function isSanguche(arg: unknown): boolean {
-    return (
-        !!arg &&
-        typeof arg === 'object' &&
-        ('_id' in arg ?  typeof arg._id === 'string' : true) && 
-        'nombre' in arg && typeof arg.nombre === 'string' &&
-        'ingredientes' in arg && Array.isArray(arg.ingredientes) &&
-        // Verificar que todos los ingredientes son válidos según el enum
-        (arg as any).ingredientes.every((ing: any) => Object.values(Ingrediente).includes(ing))
-      );
+  return (
+    !!arg &&
+    typeof arg === "object" &&
+    ("_id" in arg ? typeof (arg as ISanguche)._id === "string" : true) &&
+    "nombre" in arg &&
+    typeof (arg as ISanguche).nombre === "string" &&
+    "ingredientes" in arg &&
+    Array.isArray((arg as ISanguche).ingredientes) &&
+    // Verificar que todos los ingredientes son válidos según el enum
+    (arg as ISanguche).ingredientes.every((ing: Ingrediente) =>
+      Object.values(Ingrediente).includes(ing)
+    ) &&
+    "creatorId" in arg && // creatorId is a mongoose.Types.ObjectId or string
+    (typeof (arg as ISanguche).creatorId === "string" ||
+      (arg as ISanguche).creatorId instanceof mongoose.Types.ObjectId)
+  );
 }
 
 export enum Ingrediente {
-    JAMON = 'jamon',
-    QUESO = 'queso',
-    TOMATE = 'tomate',
-    LECHUGA = 'lechuga',
-    HUEVO = 'huevo',
-    MAYONESA = 'mayonesa'
+  JAMON = "jamon",
+  QUESO = "queso",
+  TOMATE = "tomate",
+  LECHUGA = "lechuga",
+  HUEVO = "huevo",
+  MAYONESA = "mayonesa",
 }
 
 // **** Export default **** //

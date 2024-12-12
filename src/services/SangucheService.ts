@@ -1,15 +1,13 @@
-import RouteError from '@src/common/RouteError';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HttpStatusCodes from "@src/common/HttpStatusCodes";
+import RouteError from "@src/common/RouteError";
 
-import SangucheRepo from '@src/repos/SangucheRepo';
-import { ISanguche } from '@src/models/Sanguche';
-import mongoose from 'mongoose';
-
+import { ISanguche } from "@src/models/Sanguche";
+import SangucheRepo from "@src/repos/SangucheRepo";
+import mongoose from "mongoose";
 
 // **** Variables **** //
 
-export const SANGUCHE_NOT_FOUND_ERR = 'Sanguche not found';
-
+export const SANGUCHE_NOT_FOUND_ERR = "Sanguche not found";
 
 // **** Functions **** //
 
@@ -23,50 +21,49 @@ function getAll(): Promise<ISanguche[]> {
 /**
  * Add one user.
  */
-function addOne(user: ISanguche): Promise<void> {
-  return SangucheRepo.add(user);
+async function addOne(user: ISanguche, token: string): Promise<string> {
+  return await SangucheRepo.add(user, token);
 }
 
 /**
  * Update one user.
  */
-async function updateOne(user: ISanguche): Promise<void> {
+async function updateOne(user: ISanguche, token: string): Promise<string> {
   if (!user._id) {
     throw new RouteError(
       HttpStatusCodes.BAD_REQUEST,
-      'User must have an id to update',
-    );
-  }
-  const persists = await SangucheRepo.persists(user._id);
-  if (!persists) {
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      SANGUCHE_NOT_FOUND_ERR,
+      "User must have an id to update"
     );
   }
   // Return user
-  return SangucheRepo.update(user);
+  return await SangucheRepo.update(user, token);
+}
+
+async function getAllByCreatorId(
+  creatorId: mongoose.Types.ObjectId
+): Promise<ISanguche[]> {
+  return SangucheRepo.getAllByCreatorId(creatorId);
 }
 
 /**
  * Delete a user by their id.
  */
-async function _delete(_id: mongoose.Types.ObjectId): Promise<void> {
+async function _delete(
+  _id: mongoose.Types.ObjectId,
+  token: string
+): Promise<void> {
   const persists = await SangucheRepo.persists(_id);
   if (!persists) {
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      SANGUCHE_NOT_FOUND_ERR,
-    );
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, SANGUCHE_NOT_FOUND_ERR);
   }
   // Delete user
-  return SangucheRepo.delete(_id);
+  return SangucheRepo.delete(_id, token);
 }
-
 
 // **** Export default **** //
 
 export default {
+  getAllByCreatorId,
   getAll,
   addOne,
   updateOne,

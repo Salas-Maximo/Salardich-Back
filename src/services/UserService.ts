@@ -1,15 +1,15 @@
-import RouteError from '@src/common/RouteError';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HttpStatusCodes from "@src/common/HttpStatusCodes";
+import RouteError from "@src/common/RouteError";
+import jwt from "jsonwebtoken";
 
-import UserRepo from '@src/repos/UserRepo';
-import { IUser } from '@src/models/User';
-import mongoose from 'mongoose';
-
+import EnvVars from "@src/common/EnvVars";
+import { IUser } from "@src/models/User";
+import UserRepo from "@src/repos/UserRepo";
+import mongoose from "mongoose";
 
 // **** Variables **** //
 
-export const USER_NOT_FOUND_ERR = 'User not found';
-
+export const USER_NOT_FOUND_ERR = "User not found";
 
 // **** Functions **** //
 
@@ -27,8 +27,13 @@ function addOne(user: IUser): Promise<void> {
   return UserRepo.add(user);
 }
 
-function login(user: IUser): Promise<String> {
-  return UserRepo.login(user);
+async function login(user: IUser): Promise<string> {
+  return await UserRepo.login(user).then((ok) => {
+    if (ok == "") {
+      return "";
+    }
+    return generateAccessToken(ok);
+  });
 }
 
 /**
@@ -37,10 +42,7 @@ function login(user: IUser): Promise<String> {
 async function updateOne(user: IUser): Promise<void> {
   const persists = await UserRepo.persists(user._id);
   if (!persists) {
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      USER_NOT_FOUND_ERR,
-    );
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Return user
   return UserRepo.update(user);
@@ -52,16 +54,24 @@ async function updateOne(user: IUser): Promise<void> {
 async function _delete(id: mongoose.Types.ObjectId): Promise<void> {
   const persists = await UserRepo.persists(id);
   if (!persists) {
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      USER_NOT_FOUND_ERR,
-    );
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Delete user
   return UserRepo.delete(id);
 }
 
+function generateAccessToken(userId: string): string {
+  return jwt.sign({ userId }, EnvVars.Jwt.Secret, { expiresIn: "1d" });
+}
 
+function verifyToken(token: string): string {
+  // extract userId from token else return empty string
+  try {
+    return (jwt.verify(token, EnvVars.Jwt.Secret) as { userId: string }).userId;
+  } catch (err) {
+    return "";
+  }
+}
 // **** Export default **** //
 
 export default {
@@ -69,5 +79,6 @@ export default {
   addOne,
   login,
   updateOne,
+  verifyToken,
   delete: _delete,
 } as const;
