@@ -67,12 +67,16 @@ function isSanguche(arg: unknown): boolean {
 }
 
 export enum Ingrediente {
-  JAMON = "jamon",
-  QUESO = "queso",
-  TOMATE = "tomate",
-  LECHUGA = "lechuga",
-  HUEVO = "huevo",
-  MAYONESA = "mayonesa",
+  JAMON = "Jamon",
+  QUESO = "Queso",
+  TOMATE = "Tomate",
+  LECHUGA = "Lechuga",
+  HUEVO = "Huevo",
+  MAYONESA = "Mayonesa",
+  PANCETA = "Panceta",
+  KETCHUP = "Ketchup",
+  MOSTAZA = "Mostaza",
+  PALTA = "Palta",
 }
 
 // **** Export default **** //
